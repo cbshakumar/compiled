@@ -1,3 +1,5 @@
+
+    var keyboard = new THREEx.KeyboardState();
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
@@ -8,7 +10,7 @@
     var geometry = new THREE.BoxGeometry( 1, 1, 1 );
     var material = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
     var cube = new THREE.Mesh( geometry, material );
-    cube.position.y = 10;
+    cube.position.y = 12;
     scene.add( cube );
 
     var cubeVelocity = 0.1;
@@ -16,10 +18,43 @@
     addLight(10, 50, 130);
 
     camera.position.z = 5;
-    camera.position.y = 10;
+    camera.position.y = 4;
 
     var environment = new Environment(scene, window.innerWidth, 1000, 0);
     environment.createGround();
+    environment.createRoad();
+    environment.createSky();
+    var car = environment.createCar();
+    car.velocity = 0;
+
+
+    function processKeyboard(){
+      if(keyboard.pressed("w") && car.velocity > -5) {
+        car.velocity -= 0.5;
+      }else if(keyboard.pressed("s") && car.velocity < 5) {
+        car.velocity += 0.5;
+      }
+      else{
+        if(car.velocity < 0.2 && car.velocity > -0.2) {
+          car.velocity = 0.0;
+        } else if(car.velocity > 0) {
+          car.velocity -= 0.1;
+        }else if(car.velocity < 0){
+          car.velocity += 0.1;
+        }
+      }
+
+      if(keyboard.pressed('a')){
+        car.rotation.y += 0.1;
+      } else if(keyboard.pressed('d')){
+        car.rotation.y -= 0.1;
+      }
+    }
+
+    function processCarMovement(){
+      car.position.z += car.velocity;
+      camera.position.z = car.position.z + 5;
+    }
 
     function addLight(x, y, z) {
       var pointLight = new THREE.PointLight(0xFFFFFF);
@@ -31,17 +66,14 @@
       scene.add(pointLight);
     }
 
-    function moveCube(){
-      //cube.translateX(cubeVelocity);
-      //cube.translateY(cubeVelocity);
-    }
-
     function render(){
       requestAnimationFrame(render);
 
       cube.rotation.x += 0.1;
       cube.rotation.y += 0.1;
-      moveCube();
+
+      processKeyboard();
+      processCarMovement();
 
       renderer.render(scene, camera);
     }

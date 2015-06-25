@@ -9,14 +9,65 @@ Environment.prototype.createGround = function(){
   var texture = null;
   texture = THREE.ImageUtils.loadTexture("<%= asset_path('ground.jpg') %>");
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(10, 10);
+  
+  texture.repeat.set(50, 50);
 
   var meshMaterial = new THREE.MeshBasicMaterial({ color: this.textureGround ? 0xffffff : 0xaaaaaa, ambient: 0x333333, map:texture });
-  var ground = new THREE.Mesh( new THREE.PlaneGeometry(this.width, this.length ), meshMaterial);
+  var ground = new THREE.Mesh( new THREE.PlaneBufferGeometry(this.width, this.length ), meshMaterial);
 
   ground.rotation.x = -Math.PI/2;
   ground.position.y = -.02 + this.groundY;
 
   this.scene.add(ground);
   this.ground = ground;
+}
+
+Environment.prototype.createRoad = function(){
+  var texture = null;
+  texture = THREE.ImageUtils.loadTexture("<%= asset_path('road.jpg') %>");
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  
+  texture.repeat.set(10, 25);
+
+  var meshMaterial = new THREE.MeshBasicMaterial({ color: this.textureGround ? 0xffffff : 0xaaaaaa, ambient: 0x333333, map:texture });
+  var road = new THREE.Mesh( new THREE.PlaneBufferGeometry(this.width / 20, this.length ), meshMaterial);
+
+  road.rotation.x = -Math.PI/2;
+  road.position.y = this.groundY;
+
+  this.scene.add(road);
+  this.road = road;
+}
+
+Environment.prototype.createSky = function(){
+  var texture = null;
+  texture = THREE.ImageUtils.loadTexture("<%= asset_path('sky.jpg') %>");
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  
+  var dimension = 10000;
+  texture.repeat.set(2, 1);
+
+  var meshMaterial = new THREE.MeshBasicMaterial({ color: this.textureGround ? 0xffffff : 0xaaaaaa, ambient: 0x333333, map:texture });
+  var sky = new THREE.Mesh( new THREE.PlaneBufferGeometry(dimension , dimension ), meshMaterial);
+
+  sky.rotation.x = Math.PI/2;
+  sky.position.y = this.groundY + 100;
+
+  this.scene.add(sky);
+  this.sky = sky;
+}
+
+Environment.prototype.createCar = function(){
+  var loader = new THREE.ObjectLoader();
+  var container = new THREE.Object3D();
+  loader.load("/models/gtr/nissan-gt-r-nismo.json", function ( obj ) {
+      obj.rotation.y = Math.PI;
+      //obj.rotation.y = 0;
+      obj.position.y = 3;
+      obj.position.z = -5;
+      //this.scene.add( obj );
+      container.add(obj);
+      this.scene.add(container);
+  });
+  return container;
 }
