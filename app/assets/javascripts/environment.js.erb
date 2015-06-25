@@ -1,0 +1,22 @@
+var Environment = function(scene, width, length, groundY){
+  this.scene = scene;
+  this.width = width;
+  this.length = length;
+  this.groundY = groundY;
+};
+
+Environment.prototype.createGround = function(){
+  var texture = null;
+  texture = THREE.ImageUtils.loadTexture("<%= asset_path('ground.jpg') %>");
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(10, 10);
+
+  var meshMaterial = new THREE.MeshBasicMaterial({ color: this.textureGround ? 0xffffff : 0xaaaaaa, ambient: 0x333333, map:texture });
+  var ground = new THREE.Mesh( new THREE.PlaneGeometry(this.width, this.length ), meshMaterial);
+
+  ground.rotation.x = -Math.PI/2;
+  ground.position.y = -.02 + this.groundY;
+
+  this.scene.add(ground);
+  this.ground = ground;
+}
