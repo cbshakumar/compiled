@@ -17,8 +17,8 @@
     
     addLight(10, 50, 130);
 
-    camera.position.z = 5;
-    camera.position.y = 4;
+    camera.position.z = 3;
+    camera.position.y = 1.5;
 
     var environment = new Environment(scene, window.innerWidth, 1000, 0);
     environment.createGround();
@@ -26,13 +26,14 @@
     environment.createSky();
     var car = environment.createCar();
     car.velocity = 0;
+    car.add(camera);
 
 
     function processKeyboard(){
-      if(keyboard.pressed("w") && car.velocity > -5) {
-        car.velocity -= 0.5;
-      }else if(keyboard.pressed("s") && car.velocity < 5) {
-        car.velocity += 0.5;
+      if(keyboard.pressed("w") && car.velocity > -3) {
+        car.velocity -= 0.1;
+      }else if(keyboard.pressed("s") && car.velocity < 3) {
+        car.velocity += 0.1;
       }
       else{
         if(car.velocity < 0.2 && car.velocity > -0.2) {
@@ -52,8 +53,9 @@
     }
 
     function processCarMovement(){
-      car.position.z += car.velocity;
-      camera.position.z = car.position.z + 5;
+      car.translateZ(car.velocity);
+     // car.position.z += car.velocity;
+     // camera.position.z = car.position.z + 2;
     }
 
     function addLight(x, y, z) {
